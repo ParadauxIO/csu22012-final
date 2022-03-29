@@ -25,4 +25,38 @@ Vancouver bus system data.
 ### Functionality
 - Ability to find the shortest paths between two bus stops, returning the list of stops visited as well as the associated cost.
 
-### 
+### Setup and Execution
+
+This project makes use of the [Gradle](https://gradle.org/) build tool. This permits the use and management of 
+third-party dependencies, as well as the building, testing and deployment of Java archives (JAR.)
+
+To run this project you may follow the following steps: 
+
+```bash
+./gradlew run
+```
+
+Which will compile and execute the project on your own machine, alternatively you can make use
+of the gradle `application run` task to build a JAR file as follows:
+
+```bash
+./gradlew build
+```
+
+Which you can subsequently deploy and run elsewhere by moving the deployed jar which will 
+have been generated at `build/libs/BusManagement-VERSION.jar`. Alternatively, you may run it in place as follows:
+
+```bash
+java -jar build/libs/BusManagement-1.0.0.jar
+```
+
+## Dependencies
+
+Dependencies are defined in `build.gradle.kts`
+
+- JUnit Jupiter (5)
+- Checkerframework (3.21.3) [^1]
+
+
+<hr>
+[^1]: This is the default version at the time of writing, it is written to use the checkerframework gradle plugin which makes use of the latest version.

@@ -5,6 +5,7 @@ version = projectVersion
 
 plugins {
     application
+    id("org.checkerframework") version "0.6.9"
 }
 
 repositories {
@@ -14,11 +15,11 @@ repositories {
 
 dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
-    implementation("com.google.guava:guava:31.1-jre")
 }
 
 application {
     mainClass.set("io.paradaux.busmanagement.Main")
+
 }
 
 tasks.named<Test>("test") {
