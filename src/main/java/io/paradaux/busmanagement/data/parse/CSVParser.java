@@ -108,18 +108,25 @@ public class CSVParser {
 
         for (var s : stops) {
             int id = Integer.parseInt(s[0]);
-            int code = Integer.parseInt(s[1]);
+
+            int code = parseNumberOrDefault(s[1]);
             String name = s[2];
             String description = s[3];
             double latitude = Double.parseDouble(s[4]);
             double longitude = Double.parseDouble(s[5]);
-            int zoneId = Integer.parseInt(s[6]);
-            int stopUrl = Integer.parseInt(s[7]);
+            String zoneId = s[6];
+            int stopUrl = parseNumberOrDefault(s[7]);
             int locationType = Integer.parseInt(s[8]);
-            int parentStation = Integer.parseInt(s[9]);
+            int parentStation = -1;
 
+            if (s.length == 10) {
+                parentStation = parseNumberOrDefault(s[9]);
+            }
+
+            System.out.println(Arrays.toString(s));
             parsedStops.add(new Stop(id, code, name, description, latitude, longitude, zoneId,
                     stopUrl, locationType, parentStation));
+
         }
 
         return parsedStops;
@@ -161,6 +168,14 @@ public class CSVParser {
         int seconds = Integer.parseInt(strs[2]);
 
         return LocalTime.of(hours, minutes, seconds);
+    }
+
+    private static int parseNumberOrDefault(String str) {
+        try {
+            return Integer.parseInt(str);
+        } catch (NumberFormatException exception) {
+            return -1;
+        }
     }
 
 }

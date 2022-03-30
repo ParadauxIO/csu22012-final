@@ -7,12 +7,12 @@ public class Stop {
     private final String description;
     private final double latitude;
     private final double longitude;
-    private final int zoneId;
+    private final String zoneId;
     private final int stopUrl;
     private final int locationType;
     private final int parentStation;
 
-    public Stop(int id, int code, String name, String description, double latitude, double longitude, int zoneId, int stopUrl, int locationType, int parentStation) {
+    public Stop(int id, int code, String name, String description, double latitude, double longitude, String zoneId, int stopUrl, int locationType, int parentStation) {
         this.id = id;
         this.code = code;
         this.name = name;
@@ -49,7 +49,7 @@ public class Stop {
         return longitude;
     }
 
-    public int getZoneId() {
+    public String getZoneId() {
         return zoneId;
     }
 
@@ -74,7 +74,7 @@ public class Stop {
                 ", description='" + description + '\'' +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
-                ", zoneId=" + zoneId +
+                ", zoneId='" + zoneId + '\'' +
                 ", stopUrl=" + stopUrl +
                 ", locationType=" + locationType +
                 ", parentStation=" + parentStation +
