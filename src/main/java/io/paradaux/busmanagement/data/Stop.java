@@ -64,4 +64,20 @@ public class Stop {
     public int getParentStation() {
         return parentStation;
     }
+
+    @Override
+    public String toString() {
+        return "Stop{" +
+                "id=" + id +
+                ", code=" + code +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", zoneId=" + zoneId +
+                ", stopUrl=" + stopUrl +
+                ", locationType=" + locationType +
+                ", parentStation=" + parentStation +
+                '}';
+    }
 }

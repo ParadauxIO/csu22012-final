@@ -5,7 +5,6 @@ import io.paradaux.busmanagement.data.StopTime;
 import io.paradaux.busmanagement.data.StopTransfer;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.awt.*;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -23,6 +22,7 @@ public class CSVParser {
      * A private constructor to prevent the instantiation of a utility class.
      */
     private CSVParser() {
+
     }
 
     private static String[] toStrArray(String str) {
@@ -152,10 +152,6 @@ public class CSVParser {
         }
 
         return parsedStopTimes;
-    }
-
-    public static void main(String[] args) {
-        parseStopTime();
     }
 
     private static LocalTime parseTime(String str) {

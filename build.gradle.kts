@@ -19,7 +19,6 @@ dependencies {
 
 application {
     mainClass.set("io.paradaux.busmanagement.Main")
-
 }
 
 tasks.named<Test>("test") {
