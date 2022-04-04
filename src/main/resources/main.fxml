@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <FlowPane layoutX="14.0" layoutY="22.0" prefHeight="62.0" prefWidth="163.0">
+         <children>
+            <Label prefHeight="25.0" prefWidth="128.0" text="Starting Location">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font></Label>
+            <ChoiceBox prefHeight="25.0" prefWidth="208.0" />
+         </children>
+      </FlowPane>
+      <FlowPane layoutX="227.0" layoutY="22.0" prefHeight="62.0" prefWidth="163.0">
+         <children>
+            <Label prefHeight="25.0" prefWidth="128.0" text="Arrival Location" />
+            <ChoiceBox prefHeight="25.0" prefWidth="214.0" />
+         </children>
+      </FlowPane>
+      <TableView layoutX="268.0" layoutY="84.0" prefHeight="281.0" prefWidth="318.0">
+        <columns>
+          <TableColumn prefWidth="156.33331298828125" text="Stop" />
+          <TableColumn prefWidth="150.99996948242188" text="Journey Time" />
+        </columns>
+      </TableView>
+      <Button layoutX="465.0" layoutY="47.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="107.0" text="Submit" />
+      <ImageView fitHeight="43.0" fitWidth="187.0" layoutX="25.0" layoutY="295.0" pickOnBounds="true" preserveRatio="true" />
+      <Label layoutX="14.0" layoutY="84.0" prefHeight="25.0" prefWidth="225.0" text="Translink Journey Planner.">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font></Label>
+      <Label layoutX="14.0" layoutY="109.0" prefHeight="126.0" prefWidth="233.0" text="Begin by selecting your current location or desired departure location in the checkboxto the left, and your desired arrival locationon the right handside. Clicking submit will then generate a list oftransfers required and their assosicatedtime requirements." wrapText="true" />
+      <Label layoutX="14.0" layoutY="365.0" prefHeight="25.0" prefWidth="209.0" text="https://github.com/paradauxio" />
+      <Button layoutX="14.0" layoutY="253.0" mnemonicParsing="false" text="View Stops" />
+   </children>
+</AnchorPane>
