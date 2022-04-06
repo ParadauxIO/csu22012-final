@@ -50,7 +50,7 @@ public class BusManagementRepl implements Runnable {
                     }
 
                     case "lookup": {
-
+                        System.out.println(network.getStopByNamePartial(conjoinedParameters));
 
 
                         break;
