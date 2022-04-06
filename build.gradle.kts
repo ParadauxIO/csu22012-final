@@ -35,3 +35,7 @@ javafx {
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
+}

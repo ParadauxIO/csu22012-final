@@ -17,6 +17,7 @@ public class BusNetwork {
     public BusNetwork() {
         network = new HashMap<>();
         stopRegistry = new HashMap<>();
+        stopNameTST = new TernarySearchTree();
 
         // Registers the stop
         for (Stop s : CSVParser.parseStops()) {
