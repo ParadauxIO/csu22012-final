@@ -1,7 +1,5 @@
 package io.paradaux.busmanagement.data.string;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 public class TernarySearchTree {
 
     private TSTNode root;
@@ -10,12 +8,10 @@ public class TernarySearchTree {
         root = null;
     }
 
-
     public TSTNode insert(String str) {
         root = insert(this.root, str.toCharArray(), 0);
         return root;
     }
-
 
     private TSTNode insert(TSTNode node, char[] letters, int i) {
         char letter = letters[i];
@@ -38,16 +34,15 @@ public class TernarySearchTree {
     }
 
 
-    public boolean search(String target) {
+    public boolean contains(String target) {
         if (target == null) {
             return false;
         }
 
-        return search(root, target.toCharArray(), 0);
+        return contains(root, target.toCharArray(), 0);
     }
 
-
-    private boolean search(TSTNode node, char[] letters, int i) {
+    private boolean contains(TSTNode node, char[] letters, int i) {
         if (node == null) {
             return false;
         }
@@ -55,16 +50,79 @@ public class TernarySearchTree {
         char letter = letters[i];
 
         if (letter < node.getCharacter()) {
-            return search(node.getLeft(), letters, i);
+            return contains(node.getLeft(), letters, i);
         } else if (letter > node.getCharacter()) {
-            return search(node.getRight(), letters, i);
+            return contains(node.getRight(), letters, i);
         } else {
             if (i == letters.length - 1) {
                 return node.isEnd();
             }
 
-            return search(node.getCenter(), letters, i);
+            return contains(node.getCenter(), letters, i);
         }
+    }
+
+
+    public String[] search(String word) {
+        if (word == null || word.charAt(0) == ' ') {
+            return null;
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        TSTNode root = search(this.root, word.toCharArray(), 0);
+        generateSuggestions(root, "", sb, word);
+        if (sb.length() < 1) {
+            return new String[]{};
+        }
+
+        return sb.toString().split("\n");
+    }
+
+    private TSTNode search(TSTNode node, char[] letters, int i) {
+        if (node == null) {
+            return null;
+        }
+
+        if (letters[i] < node.getCharacter()) {
+            return search(node.getLeft(), letters, i);
+        } else if (letters[i] > node.getCharacter()) {
+            return search(node.getRight(), letters, i);
+        } else {
+            if (i == letters.length - 1) {
+                return node;
+            } else {
+                return search(node.getCenter(), letters, i + 1);
+            }
+        }
+    }
+
+
+    private void generateSuggestions(TSTNode node, String str, StringBuilder sb, String pattern) {
+        if (node == null) {
+            return;
+        }
+
+        generateSuggestions(node.getLeft(), str, sb, pattern);
+        str = str + node.getCenter();
+
+        if (node.isEnd()) {
+            if (pattern.length() == 1) {
+                if (pattern.equals(str.substring(0, 1))) {
+                    sb.append(pattern)
+                            .append(str.substring(1))
+                            .append('\n');
+                }
+            } else {
+                sb.append(pattern)
+                        .append(str.substring(1))
+                        .append('\n');
+            }
+        }
+
+        generateSuggestions(node.getCenter(), str, sb, pattern);
+        str = str.substring(0, str.length() - 1);
+        generateSuggestions(node.getRight(), str, sb, pattern);
     }
 
     private static class TSTNode {
@@ -126,6 +184,5 @@ public class TernarySearchTree {
             return this;
         }
     }
-
 
 }
