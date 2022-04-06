@@ -22,8 +22,6 @@ public class BusNetwork {
         }
 
         generateNetwork();
-
-
 ;    }
 
     private void generateNetwork() {
