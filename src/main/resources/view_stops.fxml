@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.paradaux.busmanagement.ui.controller.ViewStopController">
+   <children>
+      <TableView layoutX="6.0" layoutY="36.0" prefHeight="302.0" prefWidth="585.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+      </TableView>
+      <Label layoutX="72.0" prefHeight="37.0" prefWidth="452.0" text="Journey Planner | View Stops">
+         <font>
+            <Font name="System Bold" size="17.0" />
+         </font></Label>
+      <Button layoutX="19.0" layoutY="5.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="48.0" text="Back" />
+      <ComboBox layoutX="137.0" layoutY="360.0" prefHeight="25.0" prefWidth="245.0" />
+   </children>
+</AnchorPane>

@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.paradaux.busmanagement.ui.controller.MainController">
    <children>
       <FlowPane layoutX="14.0" layoutY="22.0" prefHeight="62.0" prefWidth="163.0">
          <children>
@@ -22,7 +22,7 @@
             <ChoiceBox prefHeight="25.0" prefWidth="214.0" />
          </children>
       </FlowPane>
-      <TableView layoutX="268.0" layoutY="84.0" prefHeight="281.0" prefWidth="318.0">
+      <TableView layoutX="257.0" layoutY="84.0" prefHeight="281.0" prefWidth="329.0">
         <columns>
           <TableColumn prefWidth="156.33331298828125" text="Stop" />
           <TableColumn prefWidth="150.99996948242188" text="Journey Time" />
