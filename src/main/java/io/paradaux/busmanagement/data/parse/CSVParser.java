@@ -103,7 +103,7 @@ public class CSVParser {
     }
 
     public static List<Stop> parseStops() {
-        List<String[]> stops = readCSVFromPath("stops.txt");
+        List<String[]> stops = readCSVFromPath("./stops.txt");
         ArrayList<Stop> parsedStops = new ArrayList<>();
 
         for (var s : stops) {
