@@ -16,7 +16,7 @@ public class BusManagementGUI extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/view_stops.fxml"));
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("/main.fxml"));
 
         Scene scene = null;
         try {
