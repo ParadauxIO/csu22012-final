@@ -8,6 +8,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,44 +31,11 @@ public class CSVParser {
         return str.split(DELIMITER);
     }
 
-    /**
-     * Reads a file from resources and returns it as a {@link LinkedList} of Strings.
-     *
-     * @param path The relative location of the file within the src/main/resources folder.
-     * @return A list of Strings whereby each entry is a line within the file.
-     * Returns null if it fails to retrieve the file or its contents
-     * @implNote Makes use of {@link BufferedReader} to read the file.
-     */
-    @Nullable
-    private static List<String> readFile(String path) {
-        LinkedList<String> strings = new LinkedList<>();
-        BufferedReader reader;
-
-        try {
-            URL fileLocation = CSVParser.class.getClassLoader().getResource(path);
-
-            if (fileLocation == null) {
-                throw new FileNotFoundException();
-            }
-
-            reader = new BufferedReader(new FileReader(new File(fileLocation.toURI())));
-
-            String line = reader.readLine();
-            for (; line != null; line = reader.readLine()) {
-                strings.add(line);
-            }
-        } catch (IOException | URISyntaxException exception) {
-            exception.printStackTrace();
-            return null;
-        }
-
-        return strings;
-    }
-
     private static List<String[]> readCSVFromPath(String path) {
-        List<String> fileContents = readFile(path);
-
-        if (fileContents == null) {
+        List<String> fileContents;
+        try {
+            fileContents = Files.readAllLines(Path.of(path));
+        } catch (IOException ex) {
             throw new IllegalStateException("Failed to retrieve the file contents.");
         }
 
