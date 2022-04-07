@@ -105,7 +105,7 @@ public class TernarySearchTree {
     /**
      * Generates suggestions based on the remaining possible nodes which could be traversed.
      * @param node The next node to traverse
-     * @param str The string from which we're going to generate suggestions
+     * @param str The string which we're forming to build a suggestion
      * @param builder A {@link StringBuilder} which will pass the generated strings between executions
      * @param pattern The pattern to search for.
      * */
