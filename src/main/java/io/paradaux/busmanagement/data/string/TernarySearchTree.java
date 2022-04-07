@@ -1,5 +1,12 @@
 package io.paradaux.busmanagement.data.string;
 
+/**
+ * A {@link TernarySearchTree} is a type of prefix tree in which nodes are arranged in a structure similar to a binary
+ * search tree with the addition of an additional child node. It's often used as an associative map structure for
+ * incremental string search, which is the case for this implementation. It is intended for use in incremental string
+ * search.
+ * @implNote This tree structure is not generic, and expects strings to be stored.
+ * */
 public class TernarySearchTree {
 
     private TSTNode root;
@@ -8,181 +15,139 @@ public class TernarySearchTree {
         root = null;
     }
 
-    public TSTNode insert(String str) {
-        root = insert(this.root, str.toCharArray(), 0);
-        return root;
+
+    /**
+     * Insert as many words as desired into the TST, as varargs or a String[].
+     * @param words The words to be added to the tree.
+     * */
+    public void insert(String... words) {
+        for(String word : words) {
+            root = insert(root, word.toCharArray(), 0);
+        }
     }
 
-    private TSTNode insert(TSTNode node, char[] letters, int i) {
-        char letter = letters[i];
 
+    /**
+     * Insert a node down into the tree, creating a new child node if it doesn't exist.
+     * @param node The node from which we're starting our traversal / adding on to.
+     * @param letters The sequence of letters from a String we wish to add to the tree.
+     * @param i The index of the letter we are attempting to add.
+     * @return The added node.
+     * @implNote This is a recursive method.
+     * */
+    public TSTNode insert(TSTNode node, char[] letters, int i) {
         if (node == null) {
-            node = new TSTNode(letter);
+            node = new TSTNode(letters[i]);
         }
 
-        if (letter < node.getCharacter()) {
-            node.setLeft(insert(node.getLeft(), letters, i));
-        } else if (letter > node.getCharacter()) {
-            node.setRight(insert(node.getRight(), letters, i));
+        if (letters[i] < node.character) {
+            node.left = insert(node.left, letters, i);
+        } else if (letters[i] > node.character) {
+            node.right = insert(node.right, letters, i);
         } else {
             if (i + 1 < letters.length) {
-                node.setCenter(insert(node.getCenter(), letters, i+1));
+                node.centre = insert(node.centre, letters, i + 1);
+            } else {
+                node.isEnd = true;
             }
         }
-
         return node;
-    }
-
-
-    public boolean contains(String target) {
-        if (target == null) {
-            return false;
-        }
-
-        return contains(root, target.toCharArray(), 0);
-    }
-
-    private boolean contains(TSTNode node, char[] letters, int i) {
-        if (node == null) {
-            return false;
-        }
-
-        char letter = letters[i];
-
-        if (letter < node.getCharacter()) {
-            return contains(node.getLeft(), letters, i);
-        } else if (letter > node.getCharacter()) {
-            return contains(node.getRight(), letters, i);
-        } else {
-            if (i == letters.length - 1) {
-                return node.isEnd();
-            }
-
-            return contains(node.getCenter(), letters, i);
-        }
     }
 
 
     public String[] search(String word) {
         if (word == null || word.charAt(0) == ' ') {
-            return null;
-        }
-
-        StringBuilder sb = new StringBuilder();
-
-        TSTNode root = search(this.root, word.toCharArray(), 0);
-        generateSuggestions(root, "", sb, word);
-        if (sb.length() < 1) {
             return new String[]{};
         }
 
-        return sb.toString().split("\n");
+        StringBuilder builder = new StringBuilder();
+
+        TSTNode lastNode = search(root, word.toCharArray(), 0);
+        makeSuggestions(lastNode, "", builder, word);
+
+        if (builder.length() < 1) {
+            return new String[]{};
+        }
+
+        return builder.
+                toString()
+                .split("\n");
     }
 
+
+    /**
+     * Searches recursively for a sequence of characters {@param letters} and follows the character sequence down the
+     * tree, returning the node which contains the next letter in the sequence.
+     * @param node The node from which we're starting our traversal / adding on to.
+     * @param letters The sequence of letters from a String we wish to add to the tree.
+     * @param i The index of the letter we are attempting to add.
+     * @return The next node to be searched or the node containing the final letter.
+     * */
     private TSTNode search(TSTNode node, char[] letters, int i) {
         if (node == null) {
             return null;
         }
 
-        if (letters[i] < node.getCharacter()) {
-            return search(node.getLeft(), letters, i);
-        } else if (letters[i] > node.getCharacter()) {
-            return search(node.getRight(), letters, i);
+        if (letters[i] < node.character) {
+            return search(node.left, letters, i);
+        } else if (letters[i] > node.character) {
+            return search(node.right, letters, i);
         } else {
             if (i == letters.length - 1) {
                 return node;
             } else {
-                return search(node.getCenter(), letters, i + 1);
+                return search(node.centre, letters, i + 1);
             }
         }
     }
 
 
-    private void generateSuggestions(TSTNode node, String str, StringBuilder sb, String pattern) {
-        if (node == null) {
-            return;
-        }
-
-        generateSuggestions(node.getLeft(), str, sb, pattern);
-        str = str + node.getCenter();
-
-        if (node.isEnd()) {
-            if (pattern.length() == 1) {
-                if (pattern.equals(str.substring(0, 1))) {
-                    sb.append(pattern)
+    /**
+     * Generates suggestions based on the remaining possible nodes which could be traversed.
+     * @param node The next node to traverse
+     * @param str The string from which we're going to generate suggestions
+     * @param builder A {@link StringBuilder} which will pass the generated strings between executions
+     * @param pattern The pattern to search for.
+     * */
+    private void makeSuggestions(TSTNode node, String str, StringBuilder builder, String pattern) {
+        if (node != null) {
+            makeSuggestions(node.left, str, builder, pattern);
+            str = str + node.character;
+            if (node.isEnd) {
+                if (pattern.length() == 1) {
+                    if (pattern.equals(str.substring(0, 1))) {
+                        builder.append(pattern)
+                                .append(str.substring(1))
+                                .append('\n');
+                    }
+                } else {
+                    builder.append(pattern)
                             .append(str.substring(1))
-                            .append('\n');
+                            .append("\n");
                 }
-            } else {
-                sb.append(pattern)
-                        .append(str.substring(1))
-                        .append('\n');
             }
-        }
 
-        generateSuggestions(node.getCenter(), str, sb, pattern);
-        str = str.substring(0, str.length() - 1);
-        generateSuggestions(node.getRight(), str, sb, pattern);
+            makeSuggestions(node.centre, str, builder, pattern);
+            str = str.substring(0, str.length() - 1);
+            makeSuggestions(node.right, str, builder, pattern);
+        }
     }
 
+
+    /**
+     * Represents a node in our {@link TernarySearchTree} containing the character stored at this node, whether
+     * this node is at the end of the chain as well as its three child nodes, represented as being on the left, right or
+     * centre.
+     * */
     private static class TSTNode {
+
         private final Character character;
         private boolean isEnd;
+        private TSTNode left, centre, right;
 
-        private TSTNode left, center, right;
-
-        public TSTNode(Character character) {
-            this(character, false);
-        }
-
-        public TSTNode(Character character, boolean isEnd) {
-            this.character = character;
-            this.isEnd = isEnd;
-        }
-
-        boolean isLeaf() {
-            return left == null && right == null && center == null;
-        }
-
-        public Character getCharacter() {
-            return character;
-        }
-
-        public boolean isEnd() {
-            return isEnd;
-        }
-
-        public TSTNode getLeft() {
-            return left;
-        }
-
-        public TSTNode getCenter() {
-            return center;
-        }
-
-        public TSTNode getRight() {
-            return right;
-        }
-
-        public TSTNode setEnd(boolean end) {
-            isEnd = end;
-            return this;
-        }
-
-        public TSTNode setLeft(TSTNode left) {
-            this.left = left;
-            return this;
-        }
-
-        public TSTNode setCenter(TSTNode center) {
-            this.center = center;
-            return this;
-        }
-
-        public TSTNode setRight(TSTNode right) {
-            this.right = right;
-            return this;
+        public TSTNode(char data) {
+            this.character = data;
+            this.isEnd = false;
         }
     }
-
 }
