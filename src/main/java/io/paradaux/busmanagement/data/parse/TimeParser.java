@@ -13,14 +13,15 @@ public class TimeParser {
 
         int hours = 0, minutes = 0, seconds = 0;
         try {
-            hours = Integer.parseInt(strs[0]);
-            minutes = Integer.parseInt(strs[1]);
-            seconds = Integer.parseInt(strs[2]);
+            hours = Integer.parseInt(strs[0].trim());
+            minutes = Integer.parseInt(strs[1].trim());
+            seconds = Integer.parseInt(strs[2].trim());
 
-            if (hours > 23 || minutes > 60 || seconds > 60) {
+            if (hours > 23 || minutes > 59 || seconds > 59) {
                 throw new NumberFormatException("Time is invalid.");
             }
         } catch (NumberFormatException exception) {
+            System.out.println("Invalid time: " + str);
             return null;
         }
 

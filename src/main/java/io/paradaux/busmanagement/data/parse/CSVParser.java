@@ -130,7 +130,7 @@ public class CSVParser {
         return parsedStops;
     }
 
-    public static List<StopTime> parseStopTime() {
+    public static List<StopTime> parseStopTimes() {
         List<String[]> stopTimes = readCSVFromPath("stop_times.txt");
 
         ArrayList<StopTime> parsedStopTimes = new ArrayList<>();
@@ -141,17 +141,18 @@ public class CSVParser {
             LocalTime departureTime = TimeParser.parseTime(st[2]);
             int stopId = Integer.parseInt(st[3]);
             int stopSequence = Integer.parseInt(st[4]);
-            int stopHeadSign = Integer.parseInt(st[5]);
+            int stopHeadSign = parseNumberOrDefault(st[5]);
             int pickupType = Integer.parseInt(st[6]);
             int dropOffData = Integer.parseInt(st[7]);
-            int shapeDistTravelled = -1;
+            double shapeDistTravelled = -1;
 
             if (st.length > 8) {
-                shapeDistTravelled = Integer.parseInt(st[8]);
+                shapeDistTravelled = Double.parseDouble(st[8]);
             }
 
             // Ignore stops with invalid times.
             if (arrivalTime == null || departureTime == null) {
+
                 continue;
             }
 

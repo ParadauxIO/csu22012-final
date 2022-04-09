@@ -1,6 +1,7 @@
 package io.paradaux.busmanagement.data.structure.graph;
 
 import io.paradaux.busmanagement.data.parse.models.Stop;
+import io.paradaux.busmanagement.data.parse.models.StopTime;
 import io.paradaux.busmanagement.data.parse.models.StopTransfer;
 import io.paradaux.busmanagement.data.parse.CSVParser;
 import io.paradaux.busmanagement.data.structure.TernarySearchTree;
@@ -8,20 +9,25 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.*;
 
 public class BusNetwork {
 
     private final Map<Integer, List<StopNode>> network;
     private final Map<Integer, Stop> stopRegistry;
+    private final List<StopTime> stopTimes;
 
     private final TernarySearchTree stopNameTST;
-
 
     public BusNetwork() throws IOException {
         network = new HashMap<>();
         stopRegistry = new HashMap<>();
         stopNameTST = new TernarySearchTree();
+        stopTimes = CSVParser.parseStopTimes();
+        Collections.sort(stopTimes);
+//        stopTimes.forEach(System.out::println);
+
 
         FileWriter writer = new FileWriter("build/out.txt");
 
@@ -38,12 +44,10 @@ public class BusNetwork {
 
         writer.close();
         generateNetwork();
-        ;
     }
 
     private void generateNetwork() {
         for (StopTransfer t : CSVParser.parseStopTransfers()) {
-            System.out.println(t);
             if (t.getType() == 0) {
                 makeConnection(t.getFromId(), t.getToId(), 2);
             }
@@ -55,7 +59,6 @@ public class BusNetwork {
     }
 
     private void makeConnection(int from, int to, double cost) {
-        System.out.println(from + " " + to);
         network.computeIfAbsent(from, v -> new ArrayList<>());
         network.computeIfAbsent(to, v -> new ArrayList<>());
 
@@ -174,8 +177,18 @@ public class BusNetwork {
         return path;
     }
 
-    public void getTripsByArrivalTime() {
+    public List<StopTime> getTripsByArrivalTime(LocalTime time) {
+        List<StopTime> matchedTimes = new ArrayList<>();
 
+        for (StopTime st : stopTimes) {
+            LocalTime a = st.getArrivalTime();
+            boolean b = a.equals(time);
+            if (st.getArrivalTime().equals(time)) {
+                matchedTimes.add(st);
+            }
+        }
+
+        return matchedTimes;
     }
 
     private void initialiseDistanceTable(Map<Integer, Double> distanceTable, HashMap<Integer, Integer> previous, HashSet<Integer> visited) {

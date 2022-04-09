@@ -1,8 +1,12 @@
 package io.paradaux.busmanagement.ui;
 
+import de.vandermeer.asciitable.AsciiTable;
+import io.paradaux.busmanagement.data.parse.TimeParser;
 import io.paradaux.busmanagement.data.parse.models.Stop;
+import io.paradaux.busmanagement.data.parse.models.StopTime;
 import io.paradaux.busmanagement.data.structure.graph.BusNetwork;
 
+import java.time.LocalTime;
 import java.util.*;
 
 public class BusManagementRepl implements Runnable {
@@ -56,9 +60,41 @@ public class BusManagementRepl implements Runnable {
                         break;
                     }
 
+                    case "timesearch": {
+                        LocalTime time = TimeParser.parseTime(command[1]);
+                        if (time == null) {
+                            System.out.println("Invalid time provided.");
+                            break;
+                        }
+
+                        List<StopTime> matched = network.getTripsByArrivalTime(time);
+                        Collections.sort(matched);
+
+                        System.out.println(matched);
+
+                        AsciiTable table = new AsciiTable();
+                        table.addRule();
+                        table.addRow("ID","Arrival", "Departure");
+
+                        for (StopTime s : matched) {
+                            table.addRule();
+                            table.addRow("" + s.getStopId(), "" + s.getArrivalTime(), "" + s.getDepartureTime());
+                        }
+
+                        System.out.println(table.render());
+                        break;
+                    }
+
                     case "?":
                     case "help": {
                         printHelp();
+                        break;
+                    }
+
+                    case "clear": {
+                        for (int i = 0; i < 300; i ++) {
+                            System.out.println();
+                        }
                         break;
                     }
 
@@ -77,8 +113,9 @@ public class BusManagementRepl implements Runnable {
         System.out.println("Type '?' or 'help' at any time for further instructions.");
         System.out.println("Strings containing spaces should be encapsulated with quotation marks \"Like this\"\n\n");
         System.out.println("COMMANDS ► ");
-        printCommand("journey", "Plan a journey", "journey :STOP1: :STOP2:");
+        printCommand("journey", "Plan a journey", "journey stop_id stop_id");
         printCommand("lookup", "Look up stop", "lookup <stop> {:stop:}\n");
+        printCommand("timesearch", "Search by HH:MM:SS time.", "timesearch 23:59:59");
         System.out.println("Parameters are delimited by space.");
         System.out.println("(<> denotes a required parameter, [] denotes an optional parameter, {} denotes a list of possible parameters)");
     }

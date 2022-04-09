@@ -18,7 +18,7 @@ public class Main {
 
         BusManagementGUI gui = new BusManagementGUI();
 
-        if (System.getenv("nogui").equals("true") || strArrayContains("-nogui", args)) {
+        if (strArrayContains("-nogui", args) || (System.getenv("nogui") != null && System.getenv("nogui").equals("true")) ) {
             BusManagementRepl repl = new BusManagementRepl(network);
             repl.run();
         } else {
