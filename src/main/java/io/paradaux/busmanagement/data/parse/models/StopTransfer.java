@@ -28,4 +28,14 @@ public class StopTransfer {
     public int getMinTransferTime() {
         return minTransferTime;
     }
+
+    @Override
+    public String toString() {
+        return "StopTransfer{" +
+                "fromId=" + fromId +
+                ", toId=" + toId +
+                ", type=" + type +
+                ", minTransferTime=" + minTransferTime +
+                '}';
+    }
 }
