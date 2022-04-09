@@ -1,5 +1,7 @@
 package io.paradaux.busmanagement.ui;
 
+import de.vandermeer.asciitable.AsciiTable;
+import io.paradaux.busmanagement.data.Stop;
 import io.paradaux.busmanagement.graph.BusNetwork;
 
 import java.util.*;
@@ -50,9 +52,23 @@ public class BusManagementRepl implements Runnable {
                     }
 
                     case "lookup": {
-                        System.out.println(network.getStopByNamePartial(conjoinedParameters));
+                        List<Stop> stops = network.getStopsByNamePartial(conjoinedParameters);
+
+                        if (stops == null) {
+                            System.out.println("No stops by this name found.");
+                            continue;
+                        }
 
 
+
+//                        table.addRow("id","code","name","desc","lat","lon","zone_id","url","location_type","parent_station");
+//                        for (Stop s : stops) {
+//                            table.addRow(s.getId(), s.getCode(), s.getName(), s.getDescription(), s.getLatitude(),
+//                                    s.getLongitude(), s.getZoneId(), s.getStopUrl(), s.getLocationType(), s.getParentStation());
+//                            table.addRule();
+//                        }
+//
+//                        System.out.println(table.render());
                         break;
                     }
 
@@ -84,7 +100,7 @@ public class BusManagementRepl implements Runnable {
     }
 
     private void printCommand(String n, String d, String u) {
-        System.out.println(String.format(" ► %s :: %s%n   %s", n, d, u));
+        System.out.printf(" ► %s :: %s%n   %s%n", n, d, u);
     }
 
     private String[] removeFirstCountFromArray(int count, String[] arr) {

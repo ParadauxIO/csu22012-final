@@ -21,6 +21,8 @@ dependencies {
 
     implementation("com.dlsc.formsfx:formsfx-core:11.5.0")
     implementation("org.kordamp.bootstrapfx:bootstrapfx-core:0.4.0")
+
+    implementation("de.vandermeer:asciitable:0.3.2")
 }
 
 application {
