@@ -137,8 +137,8 @@ public class CSVParser {
         // [9017927,  5:25:00,  5:25:00, 646, 1, , 0, 0]
         for (var st : stopTimes) {
             int tripId = Integer.parseInt(st[0]);
-            LocalTime arrivalTime = parseTime(st[1]);
-            LocalTime departureTime = parseTime(st[2]);
+            LocalTime arrivalTime = TimeParser.parseTime(st[1]);
+            LocalTime departureTime = TimeParser.parseTime(st[2]);
             int stopId = Integer.parseInt(st[3]);
             int stopSequence = Integer.parseInt(st[4]);
             int stopHeadSign = Integer.parseInt(st[5]);
@@ -150,6 +150,11 @@ public class CSVParser {
                 shapeDistTravelled = Integer.parseInt(st[8]);
             }
 
+            // Ignore stops with invalid times.
+            if (arrivalTime == null || departureTime == null) {
+                continue;
+            }
+
             parsedStopTimes.add(new StopTime(tripId, arrivalTime, departureTime, stopId,
                     stopSequence, stopHeadSign, pickupType, dropOffData, shapeDistTravelled));
         }
@@ -157,14 +162,7 @@ public class CSVParser {
         return parsedStopTimes;
     }
 
-    private static LocalTime parseTime(String str) {
-        String[] strs = str.split(":");
-        int hours = Integer.parseInt(strs[0]);
-        int minutes = Integer.parseInt(strs[1]);
-        int seconds = Integer.parseInt(strs[2]);
 
-        return LocalTime.of(hours, minutes, seconds);
-    }
 
     private static int parseNumberOrDefault(String str) {
         try {
