@@ -123,7 +123,6 @@ public class CSVParser {
                 parentStation = parseNumberOrDefault(s[9]);
             }
 
-            System.out.println(Arrays.toString(s));
             parsedStops.add(new Stop(id, code, name, description, latitude, longitude, zoneId,
                     stopUrl, locationType, parentStation));
 
@@ -136,8 +135,6 @@ public class CSVParser {
         List<String[]> stopTimes = readCSVFromPath("stop_times.txt");
 
         ArrayList<StopTime> parsedStopTimes = new ArrayList<>();
-
-        System.out.println(Arrays.toString(stopTimes.get(1)));
         // [9017927,  5:25:00,  5:25:00, 646, 1, , 0, 0]
         for (var st : stopTimes) {
             int tripId = Integer.parseInt(st[0]);
