@@ -1,4 +1,4 @@
-package io.paradaux.busmanagement.data;
+package io.paradaux.busmanagement.data.parse.models;
 
 public class StopTransfer {
     private final int fromId;

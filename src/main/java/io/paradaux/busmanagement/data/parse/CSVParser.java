@@ -1,8 +1,8 @@
 package io.paradaux.busmanagement.data.parse;
 
-import io.paradaux.busmanagement.data.Stop;
-import io.paradaux.busmanagement.data.StopTime;
-import io.paradaux.busmanagement.data.StopTransfer;
+import io.paradaux.busmanagement.data.parse.models.Stop;
+import io.paradaux.busmanagement.data.parse.models.StopTime;
+import io.paradaux.busmanagement.data.parse.models.StopTransfer;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.*;
@@ -10,7 +10,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 

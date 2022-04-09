@@ -1,8 +1,7 @@
 package io.paradaux.busmanagement.ui;
 
-import de.vandermeer.asciitable.AsciiTable;
-import io.paradaux.busmanagement.data.Stop;
-import io.paradaux.busmanagement.graph.BusNetwork;
+import io.paradaux.busmanagement.data.parse.models.Stop;
+import io.paradaux.busmanagement.data.structure.graph.BusNetwork;
 
 import java.util.*;
 

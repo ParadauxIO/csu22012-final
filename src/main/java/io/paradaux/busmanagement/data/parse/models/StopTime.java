@@ -1,4 +1,4 @@
-package io.paradaux.busmanagement.data;
+package io.paradaux.busmanagement.data.parse.models;
 
 import java.time.LocalTime;
 

@@ -1,9 +1,9 @@
-package io.paradaux.busmanagement.graph;
+package io.paradaux.busmanagement.data.structure.graph;
 
-import io.paradaux.busmanagement.data.Stop;
-import io.paradaux.busmanagement.data.StopTransfer;
+import io.paradaux.busmanagement.data.parse.models.Stop;
+import io.paradaux.busmanagement.data.parse.models.StopTransfer;
 import io.paradaux.busmanagement.data.parse.CSVParser;
-import io.paradaux.busmanagement.data.string.TernarySearchTree;
+import io.paradaux.busmanagement.data.structure.TernarySearchTree;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.FileWriter;

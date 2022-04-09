@@ -1,4 +1,4 @@
-package io.paradaux.busmanagement.data.string;
+package io.paradaux.busmanagement.data.structure;
 
 /**
  * A {@link TernarySearchTree} is a type of prefix tree in which nodes are arranged in a structure similar to a binary

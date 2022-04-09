@@ -1,4 +1,4 @@
-package io.paradaux.busmanagement.graph;
+package io.paradaux.busmanagement.data.structure.graph;
 
 public class StopNode {
 

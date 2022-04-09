@@ -1,15 +1,17 @@
 package io.paradaux.busmanagement;
 
-import io.paradaux.busmanagement.graph.BusNetwork;
+import io.paradaux.busmanagement.data.structure.graph.BusNetwork;
 import io.paradaux.busmanagement.ui.BusManagementGUI;
 import io.paradaux.busmanagement.ui.BusManagementRepl;
 import javafx.application.Application;
+
+import java.io.IOException;
 
 
 public class Main {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         System.out.println("Bus Management System");
 
         BusNetwork network = new BusNetwork();
