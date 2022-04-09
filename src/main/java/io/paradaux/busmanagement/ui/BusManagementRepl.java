@@ -40,12 +40,7 @@ public class BusManagementRepl implements Runnable {
 
                 switch (command[0].toLowerCase(Locale.ROOT)) {
                     case "journey": {
-                        List<String> stops = parseSubstring('"', conjoinedParameters);
-
-                        if (stops.size() != 2) {
-                            System.out.println("Invalid options, please provide two stops surrounded by quotation marks.");
-                        }
-
+                        System.out.println(network.getShortestPath(Integer.parseInt(command[1]), Integer.parseInt(command[2])));
                         // TODO get the cost of going from stops[0] to stops[1]
                         break;
                     }
@@ -58,16 +53,6 @@ public class BusManagementRepl implements Runnable {
                             continue;
                         }
 
-
-
-//                        table.addRow("id","code","name","desc","lat","lon","zone_id","url","location_type","parent_station");
-//                        for (Stop s : stops) {
-//                            table.addRow(s.getId(), s.getCode(), s.getName(), s.getDescription(), s.getLatitude(),
-//                                    s.getLongitude(), s.getZoneId(), s.getStopUrl(), s.getLocationType(), s.getParentStation());
-//                            table.addRule();
-//                        }
-//
-//                        System.out.println(table.render());
                         break;
                     }
 

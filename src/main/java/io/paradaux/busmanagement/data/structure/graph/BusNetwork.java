@@ -174,6 +174,10 @@ public class BusNetwork {
         return path;
     }
 
+    public void getTripsByArrivalTime() {
+
+    }
+
     private void initialiseDistanceTable(Map<Integer, Double> distanceTable, HashMap<Integer, Integer> previous, HashSet<Integer> visited) {
         for (int key : network.keySet()) {
             distanceTable.put(key, Double.POSITIVE_INFINITY);
