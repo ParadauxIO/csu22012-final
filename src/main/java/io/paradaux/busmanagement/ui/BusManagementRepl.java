@@ -45,33 +45,21 @@ public class BusManagementRepl implements Runnable {
 
                 switch (command[0].toLowerCase(Locale.ROOT)) {
                     case "journey": {
-                        System.out.println(network.getShortestPath(Integer.parseInt(command[1]), Integer.parseInt(command[2])));
-                        // TODO get the cost of going from stops[0] to stops[1]
+                        try {
+                            int source = Integer.parseInt(command[1]);
+                            int destination = Integer.parseInt(command[2]);
+
+                            network.printStopInformation(network.getStopsById(network.getShortestPath(source, destination)));
+                            System.out.println("This had a total cost of: " + network.getLastCost());
+
+                        } catch (NumberFormatException exception) {
+                            System.out.println("Invalid source or destination provided.");
+                        }
                         break;
                     }
 
                     case "lookup": {
-                        List<Stop> stops = network.getStopsByNamePartial(conjoinedParameters);
-
-                        AsciiTable table = new AsciiTable();
-                        table.setShowVerticalLines(true);
-
-                        table.setHeaders("stop_id","stop_code","stop_name","stop_desc","stop_lat","stop_lon","zone_id","stop_url","location_type","parent_station");
-
-                        if (stops == null || stops.isEmpty()) {
-                            System.out.println("No stops by this name found.");
-                            continue;
-                        }
-
-                        for (Stop s : stops) {
-                            table.addRow("" + s.getId(), "" + s.getCode(), s.getName(), s.getDescription(),
-                                    "" + s.getLatitude(), "" + s.getLongitude(), s.getZoneId(), "" + s.getStopUrl(),
-                                    ""+ s.getLocationType(), "" + s.getLocationType());
-                        }
-
-                        table.print();
-
-
+                        network.printStopInformation(network.getStopsByNamePartial(conjoinedParameters));
                         break;
                     }
 

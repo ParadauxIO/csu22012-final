@@ -4,6 +4,7 @@ import io.paradaux.busmanagement.data.parse.models.Stop;
 import io.paradaux.busmanagement.data.parse.models.StopTime;
 import io.paradaux.busmanagement.data.parse.models.StopTransfer;
 import io.paradaux.busmanagement.data.parse.CSVParser;
+import io.paradaux.busmanagement.data.structure.AsciiTable;
 import io.paradaux.busmanagement.data.structure.TernarySearchTree;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -17,8 +18,9 @@ public class BusNetwork {
     private final Map<Integer, List<StopNode>> network;
     private final Map<Integer, Stop> stopRegistry;
     private final List<StopTime> stopTimes;
-
     private final TernarySearchTree stopNameTST;
+
+    private double lastCost;
 
     public BusNetwork() throws IOException {
         network = new HashMap<>();
@@ -116,6 +118,7 @@ public class BusNetwork {
         }
 
         if (source == destination) {
+            lastCost = Double.NEGATIVE_INFINITY;
             throw new IllegalStateException("The source and destination are the same stop.");
         }
 
@@ -163,7 +166,7 @@ public class BusNetwork {
         }
 
         ArrayList<Integer> path = new ArrayList<>();
-
+        int originalDestination = destination;
         if (previous.get(destination) != null) {
             if (previous.get(destination) != Integer.MAX_VALUE) {
 
@@ -172,6 +175,11 @@ public class BusNetwork {
                     destination = previous.get(destination);
                 }
             }
+        }
+
+        Double cost = distanceTable.get(originalDestination);
+        if (cost != null) {
+            lastCost = cost;
         }
 
         return path;
@@ -191,6 +199,45 @@ public class BusNetwork {
         return matchedTimes;
     }
 
+    public List<Stop> getStopsById(List<Integer> stopIds) {
+        List<Stop> stops = new ArrayList<>();
+
+        for (Integer si : stopIds) {
+            if (si == null) {
+                continue;
+            }
+
+            Stop stop = stopRegistry.get(si);
+
+            if (stop != null) {
+                stops.add(stop);
+            }
+        }
+
+        return stops;
+    }
+
+    public void printStopInformation(List<Stop> stops) {
+        AsciiTable table = new AsciiTable();
+        table.setShowVerticalLines(true);
+
+        table.setHeaders("stop_id","stop_code","stop_name","stop_desc","stop_lat","stop_lon","zone_id","stop_url","location_type","parent_station");
+
+        if (stops == null || stops.isEmpty()) {
+            System.out.println("No stops by this name found.");
+            return;
+        }
+
+        for (Stop s : stops) {
+            table.addRow("" + s.getId(), "" + s.getCode(), s.getName(), s.getDescription(),
+                    "" + s.getLatitude(), "" + s.getLongitude(), s.getZoneId(), "" + s.getStopUrl(),
+                    ""+ s.getLocationType(), "" + s.getLocationType());
+        }
+
+        table.print();
+    }
+
+
     private void initialiseDistanceTable(Map<Integer, Double> distanceTable, HashMap<Integer, Integer> previous, HashSet<Integer> visited) {
         for (int key : network.keySet()) {
             distanceTable.put(key, Double.POSITIVE_INFINITY);
@@ -199,9 +246,7 @@ public class BusNetwork {
         }
     }
 
-
-    public static void main(String[] args) throws IOException {
-        BusNetwork network = new BusNetwork();
-        System.out.println(network.getShortestPath(1218, 1258));
+    public double getLastCost() {
+        return lastCost;
     }
 }
