@@ -9,11 +9,22 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static io.paradaux.busmanagement.data.parse.ParserUtils.parseNumberOrDefault;
 
 public class CSVParser {
+
+    private static final Set<String> MOVABLE_PREFIXES;
+
+    static {
+        final SortedSet<String> prefixes = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+        Collections.addAll(prefixes, "NB", "SB", "EB", "WB", "FLAGSTOP");
+        MOVABLE_PREFIXES = Collections.unmodifiableSortedSet(prefixes);
+    }
+
 
     private static final String DELIMITER = ",";
 
@@ -109,7 +120,7 @@ public class CSVParser {
             int id = Integer.parseInt(s[0]);
 
             int code = parseNumberOrDefault(s[1]);
-            String name = s[2];
+            String name = s[2].trim();
             String description = s[3];
             double latitude = Double.parseDouble(s[4]);
             double longitude = Double.parseDouble(s[5]);
@@ -122,6 +133,27 @@ public class CSVParser {
                 parentStation = parseNumberOrDefault(s[9]);
             }
 
+            String[] namePartials = name.split(" ");
+
+            // This should only iterate 1-2 times.
+            List<String> prefixes = new ArrayList<>();
+            int i = 0;
+            for (; MOVABLE_PREFIXES.contains(namePartials[i]); i++) {
+                prefixes.add(namePartials[i]);
+            }
+
+            StringBuilder nameBuilder = new StringBuilder();
+            for (; i < namePartials.length; i++) {
+                nameBuilder.append(namePartials[i]).append(" ");
+            }
+
+            for (var prefix : prefixes) {
+                nameBuilder.append(prefix).append(" ");
+            }
+
+            name = nameBuilder.toString().trim();
+
+            System.out.println(name);
             parsedStops.add(new Stop(id, code, name, description, latitude, longitude, zoneId,
                     stopUrl, locationType, parentStation));
 
@@ -152,7 +184,6 @@ public class CSVParser {
 
             // Ignore stops with invalid times.
             if (arrivalTime == null || departureTime == null) {
-
                 continue;
             }
 
@@ -165,12 +196,5 @@ public class CSVParser {
 
 
 
-    private static int parseNumberOrDefault(String str) {
-        try {
-            return Integer.parseInt(str);
-        } catch (NumberFormatException exception) {
-            return -1;
-        }
-    }
 
 }
