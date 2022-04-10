@@ -1,4 +1,12 @@
+# Intellij
 .idea/
 *.iml
 
+# Gradle
 .gradle/
+
+# Tex
+*.aux
+*.log
+*.out
+*.synctex.gz

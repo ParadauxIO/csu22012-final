@@ -2,7 +2,7 @@
 > Rían Errity [20333410]
 
 [Specification](docs/spec.pdf) ·
-[Design Document](docs/design.md) · 
+[Design Document](docs/design-document.pdf) · 
 [GitHub: Origin](https://github.com/ParadauxIO/csu22012-final)
 
 #### Specification
