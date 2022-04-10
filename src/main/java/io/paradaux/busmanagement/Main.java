@@ -9,9 +9,7 @@ import java.io.IOException;
 
 import static io.paradaux.busmanagement.data.parse.ParserUtils.strArrayContains;
 
-
 public class Main {
-
 
     public static void main(String[] args) throws IOException {
         System.out.println("Bus Management System");
