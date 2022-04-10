@@ -1,10 +1,10 @@
 package io.paradaux.busmanagement.ui;
 
-import de.vandermeer.asciitable.AsciiTable;
 import io.paradaux.busmanagement.data.parse.ParserUtils;
 import io.paradaux.busmanagement.data.parse.TimeParser;
 import io.paradaux.busmanagement.data.parse.models.Stop;
 import io.paradaux.busmanagement.data.parse.models.StopTime;
+import io.paradaux.busmanagement.data.structure.AsciiTable;
 import io.paradaux.busmanagement.data.structure.graph.BusNetwork;
 
 import java.time.LocalTime;
@@ -53,10 +53,24 @@ public class BusManagementRepl implements Runnable {
                     case "lookup": {
                         List<Stop> stops = network.getStopsByNamePartial(conjoinedParameters);
 
-                        if (stops == null) {
+                        AsciiTable table = new AsciiTable();
+                        table.setShowVerticalLines(true);
+
+                        table.setHeaders("stop_id","stop_code","stop_name","stop_desc","stop_lat","stop_lon","zone_id","stop_url","location_type","parent_station");
+
+                        if (stops == null || stops.isEmpty()) {
                             System.out.println("No stops by this name found.");
                             continue;
                         }
+
+                        for (Stop s : stops) {
+                            table.addRow("" + s.getId(), "" + s.getCode(), s.getName(), s.getDescription(),
+                                    "" + s.getLatitude(), "" + s.getLongitude(), s.getZoneId(), "" + s.getStopUrl(),
+                                    ""+ s.getLocationType(), "" + s.getLocationType());
+                        }
+
+                        table.print();
+
 
                         break;
                     }
@@ -71,18 +85,15 @@ public class BusManagementRepl implements Runnable {
                         List<StopTime> matched = network.getTripsByArrivalTime(time);
                         Collections.sort(matched);
 
-                        System.out.println(matched);
-
                         AsciiTable table = new AsciiTable();
-                        table.addRule();
-                        table.addRow("ID","Arrival", "Departure");
+                        table.setShowVerticalLines(true);
+                        table.setHeaders("ID","Arrival", "Departure");
 
                         for (StopTime s : matched) {
-                            table.addRule();
                             table.addRow("" + s.getStopId(), "" + s.getArrivalTime(), "" + s.getDepartureTime());
                         }
 
-                        System.out.println(table.render());
+                        table.print();
                         break;
                     }
 
