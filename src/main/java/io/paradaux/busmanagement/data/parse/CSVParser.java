@@ -10,8 +10,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static io.paradaux.busmanagement.data.parse.ParserUtils.parseNumberOrDefault;
 

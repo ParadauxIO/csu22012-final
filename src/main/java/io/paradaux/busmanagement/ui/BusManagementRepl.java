@@ -2,7 +2,6 @@ package io.paradaux.busmanagement.ui;
 
 import io.paradaux.busmanagement.data.parse.ParserUtils;
 import io.paradaux.busmanagement.data.parse.TimeParser;
-import io.paradaux.busmanagement.data.parse.models.Stop;
 import io.paradaux.busmanagement.data.parse.models.StopTime;
 import io.paradaux.busmanagement.data.structure.AsciiTable;
 import io.paradaux.busmanagement.data.structure.graph.BusNetwork;
@@ -49,9 +48,12 @@ public class BusManagementRepl implements Runnable {
                             int source = Integer.parseInt(command[1]);
                             int destination = Integer.parseInt(command[2]);
 
-                            network.printStopInformation(network.getStopsById(network.getShortestPath(source, destination)));
-                            System.out.println("This had a total cost of: " + network.getLastCost());
-
+                            try {
+                                network.printStopInformation(network.getStopsById(network.getShortestPath(source, destination)));
+                                System.out.println("This had a total cost of: " + network.getLastCost());
+                            } catch (IllegalStateException exception) {
+                                System.out.println("Invalid Journey Provided");
+                            }
                         } catch (NumberFormatException exception) {
                             System.out.println("Invalid source or destination provided.");
                         }
