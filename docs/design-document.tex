@@ -1,0 +1,150 @@
+\documentclass[12pt]{report}
+\usepackage{titlesec}
+\titleformat{\chapter}[display]   
+{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{16pt}{\Huge} 
+\titlespacing*{\chapter}{0pt}{-50pt}{10pt}
+
+\usepackage{hyperref}
+\usepackage[legalpaper, portrait, margin=0.5in]{geometry}
+\begin{document}
+	
+	\title{Translink Journey Planner Implementation}   % type title between braces
+	\author{Rían Errity}         % type author(s) between braces
+	\date{April 10, 2022}    % type date between braces
+	\maketitle
+	
+	\begin{abstract}
+		This project concerns the implementation of a "management" system for Vancouver's Translink transportation network.
+		In reality, this is a simple Journey Planner in which a user can:
+		 \begin{enumerate}
+		 	\item Look up information pertaining to a stop by Name or ID.
+		 	\item Find a route, including transfers between any two connected stops.
+		 	\item Search for all stops which have an arrival at a specified time. 
+		 \end{enumerate}
+	\end{abstract}
+	
+	\chapter{Tooling, Implementation and Execution}
+	\section{Tooling}
+	
+	This project was implemented in Java with the use of \href{https://gradle.org}{Gradle}, a dependency management and build tool. This necessitated a different project structure than one would be used to if they were not already familiar with the larger Java ecosystem, or without prior exposure to build tools such as Apache Maven or Ant. This particular Gradle project is making use of the Kotlin DSL as opposed to the Groovy DSL. \newline
+
+	 Development was performed in Intellij IDEA Ultimate, hence the presence of \texttt{.idea/} and \texttt{*.iml} within the \texttt{.gitignore} file. These ignore Intellij-specific workspace configuration files, which are unnecessary to commit. Likewise, I have ignored the Gradle wrapper, to maintain version independence, and the results of Gradle builds, usually contained within the \texttt{build/} sub-directory. 
+	
+	\section{Implementation} 
+	This project has been implemented as one cohesive project with two disjoint interfaces, one with a graphical user interface implemented in \href{https://openjfx.io}{JavaFX}, which is incomplete at the time of writing as well as a command-line REPL \footnote{Read-Evaluate-Print Loop is an interactive command line application in which a user is prompted for input which is then parsed and a result is printed, much akin to a shell environment.} \newline
+	
+	This project required some slight modifications to vanilla Gradle, namely the need to attach STDIO \footnote{Often referred to as simply \texttt{System.in} in Java} to the \texttt{gradle run} task as well as the addition of the JavaFX Gradle plugin which includes some of the runtime artifacts which JavaFX requires but which are no longer included in the JVM following Oracle's open sourcing of the project post-Java-1.8. \newline
+	
+	\subsection{Parsing}
+	A major aspect of this project was simply the parsing of the unsanitised and inconsistent comma-separated value (CSV) files provided as input to this project. As it was such an important task, this is what I decided to tackle first --- I created a standalone class \texttt{CSVParser.java} for this purpose which now contains methods to 
+	\begin{enumerate}
+		\item Read in a file as a list of Strings, and split them by comma to create a 2D Array containing all fields. 
+		\item Parse the individual fields into their appropriate fields into their appropriate POJO \footnote{Plain Ol' Java Object, a term used to refer to a dummy object whose sole purpose is to hold structured data.} 
+	\end{enumerate}
+	There ended up being a little more work to be done on this file after the fact, particularly due to the sanitation requirements which I neglected when I initially wrote the class, including the need to trim additional white-space around the time parser, and some fields which aren't always present. In the case of a field which isn't always present I simply reverted them to a default, invalid value (such as -1.)
+
+	\section{Execution}
+	This project can be executed in one of two ways, both of which are outlined in \texttt{README.md}. The former being to use the aforementioned \texttt{./gradlew run} command or to build a portable Java Archive (JAR) file, which can then be ran anywhere through the use of \texttt{java -jar MyJar.jar} provided there is a JVM on \texttt{\$PATH}. \newline
+	
+	The program respects the presence of a command-line flag (\texttt{-nogui}) which reverts the program into using the REPL-environment mentioned earlier, alternatively this can be enabled through the use of the \texttt{nogui=true} environment variable. The REPL is the first-class experience at the time of writing due to a lack of time to implement the graphical user interface, as I alluded to earlier. 
+ 	
+	\chapter{Design Decisions}
+	\section{Feature 1: Shortest Path}
+	\subsection {Description}
+	The shortest path feature is accessible in the REPL-envoirnment through the use of the \texttt{journey} command which accepts two stop ID numbers \footnote{Stop IDs are among the information which can be obtained through the use of Feature 2 as described in \S\ref{ft2}}.
+	
+	This command was implemented using Dijkstra's shortest-path algorithm. An algorithm which we both covered in class, and previously implemented for a past assignment, meaning I was both familiar with it and aware of its costs and limitations. I suspect there was enough information to make use of the A* shortest-path algorithm, with both directions (given as prefixes in stop names) as well as the geographical co-ordinates of the stops, however I found it was more useful to have a working implementation rather than wasting what time I had left on a small chance of an alternative algorithm being implementable. \newline 
+	
+	The algorithm operates on a HashMap of Integers mapping to a list of StopNodes, whereby Integer represents the ID of a given stop and the list of StopNodes represents a simple to-from-cost structure containing all of the edges from the stop represented by the map key \newline 
+	
+	The algorithm has been modified somewhat to provide both a queue of stops it has visited, as well as the total cost it took to reach a given point. The cost is stored as a field within the class due to a limitation in which Java cannot natively return multiple values. \newline
+	
+	\subsection{Complexity}
+	The Time Complexity of Dijkstra's Algorithm is $O(V^2)$ where $V$ is the number of vertices / stops.
+	
+	\subsection{Example}
+	\begin{verbatim}
+	journey-planner $ journey 3053 12235
+	[3053, 8032, 12235]
+	\end{verbatim}
+	
+	\section{Feature 2: Stop Search by Name} \label{ft2}
+	\subsection{Description}
+	Feature 2 requires a user to be able to search for stop information by only providing a partial of the name of the desired stop, which the program should then provide the stop information for all stops which may be the desired stop. This is implemented using a Ternary Search Tree as suggested in the specification. As stops are parsed their names are added to a Ternary Search Tree as well as a HashMap which maps names to the rest of the Stop meta data, this allows constant time lookup of the remainder of the stop metadata which is presented in AsciiTable form.  
+	
+	
+	\subsection{Complexity}
+	The complexity of a TST Search is considered to be $O(\log n)$
+	\subsection{Example}
+	\begin{verbatim}
+journey-planner $ lookup POWELL ST FS
++---------+-----------+-------------------------------+---------------------------+-----------+-------------+---------+----------+---------------+----------------+
+| stop_id | stop_code | stop_name                     | stop_desc                 | stop_lat  | stop_lon    | zone_id | stop_url | location_type | parent_station |
++---------+-----------+-------------------------------+---------------------------+-----------+-------------+---------+----------+---------------+----------------+
+| 435     | 50431     | POWELL ST FS CLARK DR EB      | POWELL ST @ CLARK DR      | 49.283029 | -123.076625 | ZN 99   | -1       | 0             | 0              |
+| 38      | 50038     | POWELL ST FS COLUMBIA ST WB   | POWELL ST @ COLUMBIA ST   | 49.283285 | -123.102896 | ZN 99   | -1       | 0             | 0              |
+| 437     | 50433     | POWELL ST FS COMMERCIAL DR EB | POWELL ST @ COMMERCIAL DR | 49.283885 | -123.069837 | ZN 99   | -1       | 0             | 0              |
+| 512     | 50508     | POWELL ST FS COMMERCIAL DR WB | POWELL ST @ COMMERCIAL DR | 49.283837 | -123.070862 | ZN 99   | -1       | 0             | 0              |
+| 516     | 50512     | POWELL ST FS GLEN DR WB       | POWELL ST @ GLEN DR       | 49.282792 | -123.081659 | ZN 99   | -1       | 0             | 0              |
+| 520     | 50516     | POWELL ST FS GORE AVE WB      | POWELL ST @ GORE AVE      | 49.283223 | -123.098134 | ZN 99   | -1       | 0             | 0              |
+| 517     | 50513     | POWELL ST FS HAWKS AVE WB     | POWELL ST @ HAWKS AVE     | 49.28303  | -123.087522 | ZN 99   | -1       | 0             | 0              |
+| 518     | 50514     | POWELL ST FS HEATLEY AVE WB   | POWELL ST @ HEATLEY AVE   | 49.283076 | -123.089941 | ZN 99   | -1       | 0             | 0              |
+| 519     | 50515     | POWELL ST FS JACKSON AVE WB   | POWELL ST @ JACKSON AVE   | 49.283146 | -123.093725 | ZN 99   | -1       | 0             | 0              |
+| 436     | 50432     | POWELL ST FS MCLEAN DR EB     | POWELL ST @ MCLEAN DR     | 49.283237 | -123.073597 | ZN 99   | -1       | 0             | 0              |
+| 439     | 50435     | POWELL ST FS VICTORIA DR EB   | POWELL ST @ VICTORIA DR   | 49.284771 | -123.065065 | ZN 99   | -1       | 0             | 0              |
+| 500     | 50496     | POWELL ST FS VICTORIA DR WB   | POWELL ST @ VICTORIA DR   | 49.2848   | -123.065973 | ZN 99   | -1       | 0             | 0              |
+| 513     | 50509     | POWELL ST FS WOODLAND DR WB   | POWELL ST @ WOODLAND DR   | 49.283481 | -123.072984 | ZN 99   | -1       | 0             | 0              |
++---------+-----------+-------------------------------+---------------------------+-----------+-------------+---------+----------+---------------+----------------+
+	\end{verbatim}
+	
+	The full table was too wide for this document. You can view a full raw version \href{https://gist.githubusercontent.com/ParadauxIO/9c44111f89cfad4fe7df1f01a1305bde/raw/cd7e87f784e10381237592c35c16c89320322b6c/gistfile1.txt}{HERE}
+	
+	\section{Feature 3: Stop Search by Time}
+	\subsection{Description}
+	This feature is based on $stop\_times.txt$ which is parsed by CSVParser.txt before being loaded into an ArrayList in BusNetwork. This is then probed by looking for the equality of LocalTime objects. This equality is an integer comparison which can be significantly faster than string equivalence, it is also a semantic search, as we're searching for the actual values rather than a string representation of them (which would require separate handling of 05:12:05 and 5:12:5 for example) \newline
+	
+	This feature is accessible in the REPL-environment through the use of the \texttt{timesearch} command. It takes a single parameter which is an HH:MM:SS time representation. 
+	
+	\subsection{Complexity}
+	This requires a search of the entire List$<$StopTime$>$  registry, which contains ~ 1.3m records with the given example data. The registry is sorted by trip id, though so it does not require further sorting. $O(N)$
+	
+	\subsection{Example}
+
+	\begin{verbatim}
+		journey-planner $ timesearch 9:17:21
+		+-------+----------+-----------+
+		| ID    | Arrival  | Departure |
+		+-------+----------+-----------+
+		| 30    | 09:17:21 | 09:17:21  |
+		| 1281  | 09:17:21 | 09:17:21  |
+		| 11087 | 09:17:21 | 09:17:21  |
+		| 1356  | 09:17:21 | 09:17:21  |
+		| 11049 | 09:17:21 | 09:17:21  |
+		| 291   | 09:17:21 | 09:17:21  |
+		| 1999  | 09:17:21 | 09:17:21  |
+		| 1865  | 09:17:21 | 09:17:21  |
+		| 2215  | 09:17:21 | 09:17:21  |
+		| 10479 | 09:17:21 | 09:17:21  |
+		| 12257 | 09:17:21 | 09:17:21  |
+		| 3168  | 09:17:21 | 09:17:21  |
+		| 3168  | 09:17:21 | 09:17:21  |
+		| 4251  | 09:17:21 | 09:17:21  |
+		| 5516  | 09:17:21 | 09:17:21  |
+		| 5844  | 09:17:21 | 09:17:21  |
+		| 5311  | 09:17:21 | 09:17:21  |
+		| 5525  | 09:17:21 | 09:17:21  |
+		| 10757 | 09:17:21 | 09:17:21  |
+		| 6854  | 09:17:21 | 09:17:21  |
+		| 6953  | 09:17:21 | 09:17:21  |
+		| 6354  | 09:17:21 | 09:17:21  |
+		| 5570  | 09:17:21 | 09:17:21  |
+		| 11828 | 09:17:21 | 09:17:21  |
+		| 4170  | 09:17:21 | 09:17:21  |
+		| 948   | 09:17:21 | 09:17:21  |
+		| 4675  | 09:17:21 | 09:17:21  |
+		+-------+----------+-----------+
+		journey-planner $ 
+	\end{verbatim}
+	
+		
+\end{document}
