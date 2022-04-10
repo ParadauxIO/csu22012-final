@@ -20,11 +20,11 @@ public class Main {
 
         BusManagementGUI gui = new BusManagementGUI();
 
-        if (strArrayContains("-nogui", args) || (System.getenv("nogui") != null && System.getenv("nogui").equals("true")) ) {
+        if (strArrayContains("-gui", args) || (System.getenv("gui") != null && System.getenv("nogui").equals("true")) ) {
+            Application.launch(BusManagementGUI.class, args);
+        } else {
             BusManagementRepl repl = new BusManagementRepl(network);
             repl.run();
-        } else {
-            Application.launch(BusManagementGUI.class, args);
         }
     }
 
