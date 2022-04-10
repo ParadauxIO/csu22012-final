@@ -1,6 +1,7 @@
 package io.paradaux.busmanagement.ui;
 
 import de.vandermeer.asciitable.AsciiTable;
+import io.paradaux.busmanagement.data.parse.ParserUtils;
 import io.paradaux.busmanagement.data.parse.TimeParser;
 import io.paradaux.busmanagement.data.parse.models.Stop;
 import io.paradaux.busmanagement.data.parse.models.StopTime;
@@ -39,7 +40,7 @@ public class BusManagementRepl implements Runnable {
                 hasQuit = true;
             } else {
                 String[] command = operation.split(" ");
-                String[] parameters = removeFirstCountFromArray(1, command);
+                String[] parameters = ParserUtils.removeFirstCountFromArray(1, command);
                 String conjoinedParameters = String.join(" ", parameters);
 
                 switch (command[0].toLowerCase(Locale.ROOT)) {
@@ -124,36 +125,5 @@ public class BusManagementRepl implements Runnable {
         System.out.printf(" ► %s :: %s%n   %s%n", n, d, u);
     }
 
-    private String[] removeFirstCountFromArray(int count, String[] arr) {
-        String[] arr2 = new String[arr.length-count];
-        System.arraycopy(arr, count, arr2, 0, arr2.length);
-        return arr2;
-    }
 
-    private List<String> parseSubstring(char delimiter, String s) {
-        System.out.println("s: " + s);
-        List<Integer> delimiterLocations = new ArrayList<>();
-
-        char[] letters = s.toCharArray();
-        for (int i = 0; i < letters.length; i++) {
-            if (letters[i] == delimiter) {
-                delimiterLocations.add(i);
-            }
-        }
-
-        System.out.println("delim size: " + delimiterLocations);
-
-        if (delimiterLocations.size() % 2 != 0) {
-            return new ArrayList<>();
-        }
-
-
-        List<String> stops = new ArrayList<>();
-        for (int i = 0; i < delimiterLocations.size() - 1; i+=2) {
-            stops.add(s.substring(delimiterLocations.get(i) + 1, delimiterLocations.get(i+1)));
-        }
-
-        System.out.println("stops" + stops);
-        return stops;
-    }
 }

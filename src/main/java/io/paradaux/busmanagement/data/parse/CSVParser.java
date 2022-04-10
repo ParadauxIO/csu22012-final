@@ -153,7 +153,6 @@ public class CSVParser {
 
             name = nameBuilder.toString().trim();
 
-            System.out.println(name);
             parsedStops.add(new Stop(id, code, name, description, latitude, longitude, zoneId,
                     stopUrl, locationType, parentStation));
 

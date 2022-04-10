@@ -21,7 +21,6 @@ public class TimeParser {
                 throw new NumberFormatException("Time is invalid.");
             }
         } catch (NumberFormatException exception) {
-            System.out.println("Invalid time: " + str);
             return null;
         }
 

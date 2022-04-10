@@ -7,6 +7,8 @@ import javafx.application.Application;
 
 import java.io.IOException;
 
+import static io.paradaux.busmanagement.data.parse.ParserUtils.strArrayContains;
+
 
 public class Main {
 
@@ -26,13 +28,5 @@ public class Main {
         }
     }
 
-    private static boolean strArrayContains(String str, String[] arr) {
-        for (String s : arr) {
-            if (str.equals(s)) {
-                return true;
-            }
-        }
 
-        return false;
-    }
 }
